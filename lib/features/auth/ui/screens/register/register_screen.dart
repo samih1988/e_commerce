@@ -1,18 +1,13 @@
-import 'package:e_commerce_app/config/di/di.dart';
 import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
-import 'package:e_commerce_app/features/ui/auth/register/cubit/register_view_model.dart';
-import 'package:e_commerce_app/features/ui/auth/states/auth_states.dart';
-import 'package:e_commerce_app/features/ui/widgets/custom_elevated_button.dart';
-import 'package:e_commerce_app/features/ui/widgets/custom_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:e_commerce_app/core/utils/validators.dart';
-
-import '../../../../core/utils/dialog_utils.dart';
+import '../../../../../core/utils/dialog_utils.dart';
+import 'cubit/register_view_model.dart';
 
 class RegisterScreen extends StatefulWidget {
   RegisterScreen({super.key});

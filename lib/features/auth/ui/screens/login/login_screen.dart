@@ -1,19 +1,17 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:e_commerce_app/config/di/di.dart';
-import 'package:e_commerce_app/core/cache/shared_prefs_utils.dart';
 import 'package:e_commerce_app/core/utils/app_assets.dart';
 import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/core/utils/dialog_utils.dart';
-import 'package:e_commerce_app/features/ui/auth/login/cubit/login_view_model.dart';
-import 'package:e_commerce_app/features/ui/auth/states/auth_states.dart';
-import 'package:e_commerce_app/features/ui/widgets/custom_elevated_button.dart';
-import 'package:e_commerce_app/features/ui/widgets/custom_text_form_field.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:e_commerce_app/core/utils/validators.dart';
+import '../../../../common/widgets/custom_elevated_button.dart';
+import '../../../../common/widgets/custom_text_form_field.dart';
+import 'cubit/login_view_model.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -45,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
           DialogUtils.showMessage(context: context, message: 'Login Successfully',
               title: 'Success',posActionName: 'Ok',posAction: (){
             //todo: save token
-                SharedPrefsUtils.saveData(key: 'token', value: state.authResponse.token??'');
                 //todo : navigate to home screen
                 Navigator.of(context).pushReplacementNamed(AppRoutes.homeRoute);
               });
