@@ -54,7 +54,7 @@ class AppValidators {
   }
 
   static String? validatePhoneNumber(String? val) {
-    if (val == null) {
+    if (val == null || val.trim().isEmpty) {
       return 'this field is required';
     } else if (int.tryParse(val.trim()) == null) {
       return 'enter numbers only';

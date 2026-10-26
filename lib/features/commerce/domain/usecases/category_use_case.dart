@@ -1,0 +1,13 @@
+import 'package:e_commerce_app/features/commerce/domain/entities/common/category.dart';
+import 'package:e_commerce_app/features/commerce/domain/repository/home_repository.dart';
+import 'package:e_commerce_app/features/network/api/api_result.dart';
+import 'package:injectable/injectable.dart';
+
+@LazySingleton()
+class CategoryUseCase {
+  HomeRepository homeRepository;
+  CategoryUseCase({required this.homeRepository});
+  Future<ApiResult<List<Category>>>call(){
+    return homeRepository.getAllCategories();
+  }
+}

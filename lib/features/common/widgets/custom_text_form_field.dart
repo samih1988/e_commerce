@@ -17,7 +17,8 @@ class CustomTextFormField extends StatefulWidget {
   bool isObscureText;
   bool isPassword;
   TextStyle? textStyle;
-  bool  readonly;
+  bool readonly;
+  FocusNode? focusNode;
 
   CustomTextFormField({
     super.key,
@@ -30,6 +31,7 @@ class CustomTextFormField extends StatefulWidget {
     this.labelStyle,
     this.prefixIcon,
     this.suffixIcon,
+    this.focusNode,
     this.isObscureText = false,
     this.isPassword = false,
     this.filledColor = AppColors.whiteColor,
@@ -48,6 +50,7 @@ class _CustomTextFormFieldState extends State<CustomTextFormField> {
     return Padding(
       padding: EdgeInsets.only(top: 12.h, bottom: 20.h),
       child: TextFormField(
+        focusNode: widget.focusNode,
         style: widget.textStyle,
         obscureText: widget.isObscureText,
         keyboardType: widget.keyboardType,

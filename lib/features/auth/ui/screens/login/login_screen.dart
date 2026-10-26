@@ -4,45 +4,64 @@ import 'package:e_commerce_app/core/utils/app_colors.dart';
 import 'package:e_commerce_app/core/utils/app_routes.dart';
 import 'package:e_commerce_app/core/utils/app_styles.dart';
 import 'package:e_commerce_app/core/utils/dialog_utils.dart';
-
+import 'package:e_commerce_app/features/common/resource_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:e_commerce_app/core/utils/validators.dart';
+import '../../../../../core/di/di.dart';
 import '../../../../common/widgets/custom_elevated_button.dart';
 import '../../../../common/widgets/custom_text_form_field.dart';
 import 'cubit/login_view_model.dart';
 
 class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  TextEditingController emailController =
-      TextEditingController(text: "amira15sun@gmail.com");
-  TextEditingController passwordController =
-      TextEditingController(text: "123456@A");
+  final TextEditingController emailController =
+      TextEditingController(text:"samih_2026@gmail.com");
+  final TextEditingController passwordController =
+      TextEditingController(text:"sam@12345");
 
-  LoginViewModel viewModel = getIt<LoginViewModel>();
+  final LoginViewModel viewModel = getIt<LoginViewModel>();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isPasswordObscured = true;
 
+  @override
+  void dispose() {
+    emailController.dispose();
+    passwordController.dispose();
+    viewModel.close();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginViewModel,AuthStates>(
+    return BlocListener<LoginViewModel, ResourceState>(
       bloc: viewModel,
-      listener: (context,state){
-        if(state is AuthLoadingState){
+      listener: (context, state) {
+        if (state.isLoading) {
           DialogUtils.showLoading(context: context, message: 'Waiting...');
-        }else if(state is AuthErrorState){
+        } else if (state.isError) {
           DialogUtils.hideLoading(context);
-          DialogUtils.showMessage(context: context, message: state.message,
-          title: 'Error',posActionName: 'Ok');
-        }else if(state is AuthSuccessState){
+          DialogUtils.showMessage(
+              context: context,
+              message: state.errorMessage ?? 'Something went wrong',
+              title: 'Error',
+              posActionName: 'Ok');
+        } else if (state.isSuccess) {
           DialogUtils.hideLoading(context);
-          DialogUtils.showMessage(context: context, message: 'Login Successfully',
-              title: 'Success',posActionName: 'Ok',posAction: (){
-            //todo: save token
+          DialogUtils.showMessage(
+              context: context,
+              message: 'Login Successfully',
+              title: 'Success',
+              posActionName: 'Ok',
+              posAction: () {
+                //todo: save token
                 //todo : navigate to home screen
                 Navigator.of(context).pushReplacementNamed(AppRoutes.homeRoute);
               });
@@ -79,19 +98,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       Padding(
                         padding: EdgeInsets.only(top: 40.h),
                         child: Form(
-                          key: viewModel.formKey,
+                          key: formKey,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               Text(
-                                "User Name",
+                                "Email",
                                 style: AppStyles.medium18White,
                               ),
                               CustomTextFormField(
                                   isPassword: false,
-                                  keyboardType: TextInputType.text,
+                                  keyboardType: TextInputType.emailAddress,
                                   isObscureText: false,
-                                  hintText: "enter your name",
+                                  hintText: "enter your email address",
                                   hintStyle: AppStyles.light18HintText,
                                   filledColor: AppColors.whiteColor,
                                   controller: emailController,
@@ -103,15 +122,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               CustomTextFormField(
                                 isPassword: true,
                                 keyboardType: TextInputType.visiblePassword,
-                                isObscureText: true,
+                                isObscureText: isPasswordObscured,
                                 hintText: "enter your password",
                                 hintStyle: AppStyles.light18HintText,
                                 filledColor: AppColors.whiteColor,
                                 controller: passwordController,
                                 validator: AppValidators.validatePassword,
                                 suffixIcon: IconButton(
-                                    onPressed: () {},
-                                    icon: Icon(Icons.visibility_off)),
+                                    onPressed: () {
+                                      setState(() {
+                                        isPasswordObscured =
+                                            !isPasswordObscured;
+                                      });
+                                    },
+                                    icon: Icon(isPasswordObscured
+                                        ? Icons.visibility_off
+                                        : Icons.visibility)),
                               ),
                               InkWell(
                                 onTap: () {},
@@ -128,8 +154,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                     textStyle: AppStyles.semi20Primary,
                                     text: "Login",
                                     onPressed: () {
-                                      viewModel.login(email: emailController.text,
-                                          password: passwordController.text);
+                                      if (formKey.currentState?.validate() ==
+                                          true) {
+                                        viewModel.login(
+                                            email: emailController.text.trim(),
+                                            password:
+                                                passwordController.text.trim());
+                                      }
                                     }),
                               ),
                               Padding(
